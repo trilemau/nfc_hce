@@ -19,7 +19,7 @@ class HCEService : HostApduService() {
         const val MIN_APDU_LENGTH = 12
     }
 
-    // Everytime a card reader sends an APDU command that is filtered by our manifest filter
+    // Process incoming APDU commands
     override fun processCommandApdu(commandApdu: ByteArray?, extras: Bundle?): ByteArray {
         // TODO: APDU to class
         // https://github.com/City-of-Helsinki/android-hce/blob/master/app/src/main/java/fi/hel/helsinkihcedemo/Apdu.kt
@@ -65,7 +65,7 @@ class HCEService : HostApduService() {
         return Utility.hexStringToByteArray(HCEConstants.INS_NOT_SUPPORTED)
     }
 
-    // Different AID has been selected or lost NFC connection
+    // Lost communication between reader and Android device or another HCE Service selected
     override fun onDeactivated(reason: Int) {
         Log.d(HCEConstants.TAG, "Deactivated: " + reason)
     }
