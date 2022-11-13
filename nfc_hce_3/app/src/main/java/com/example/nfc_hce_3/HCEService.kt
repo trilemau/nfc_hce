@@ -6,60 +6,46 @@ import android.util.Log
 
 class HCEService : HostApduService() {
 
-    object HCEConstants {
-        const val TAG = "Host Card Emulator"
-        const val STATUS_SELECT_SUCCESS = "9000"
-        const val STATUS_FAILED = "6F00"
-        const val CLA_NOT_SUPPORTED = "6E00"
-        const val INS_NOT_SUPPORTED = "6D00"
-        const val AID = "FF3F12C1583A69D28C4082412A90AC00"
-        const val SELECT_INS = "A4"
-        const val GET_INS = "C0"
-        const val DEFAULT_CLA = "00"
-        const val MIN_APDU_LENGTH = 12
-    }
-
     // Process incoming APDU commands
     override fun processCommandApdu(commandApdu: ByteArray?, extras: Bundle?): ByteArray {
-        // TODO: APDU to class
-        // https://github.com/City-of-Helsinki/android-hce/blob/master/app/src/main/java/fi/hel/helsinkihcedemo/Apdu.kt
+        try {
+            if (commandApdu == null) {
+                Log.d("PROCESS_COMMAND_APDU", "APDU COMMAND NULL")
+                return Utility.hexStringToByteArray(HCEConstants.STATUS_FAILED)
+            }
 
-        if (commandApdu == null) {
+            val hexCommandApdu = Utility.toHex(commandApdu)
+            Log.d("PROCESS_COMMAND_APDU", hexCommandApdu)
+
+            // Check for minimum APDU length
+            if (commandApdu.size < HCEConstants.MIN_APDU_LENGTH) {
+                throw IllegalArgumentException("APDU command incorrect length")
+                return Utility.hexStringToByteArray(HCEConstants.INCORRECT_APDU_LENGTH)
+            }
+
+            // Convert bytes to hex string
+            var apduCommand = APDUCommand(hexCommandApdu)
+
+            // Check if CLA is valid
+            if (hexCommandApdu.substring(0, 2) != HCEConstants.DEFAULT_CLA) {
+                Log.d("PROCESS_COMMAND_APDU", "Unsupported CLA")
+                return Utility.hexStringToByteArray(HCEConstants.CLA_NOT_SUPPORTED)
+            }
+
+            // Select correct INS
+            when (apduCommand.ins) {
+                HCEConstants.INS_SELECT_FILE -> {
+                    Log.d("PROCESS_COMMAND_APDU", "SELECT SUCCESS")
+                    return Utility.hexStringToByteArray(HCEConstants.STATUS_SELECT_SUCCESS)
+                }
+                HCEConstants.INS_GET_RESPONSE -> {
+                    Log.d("PROCESS_COMMAND_APDU", "GET RESPONSE SUCCESS")
+                    return Utility.hexStringToByteArray(HCEConstants.HCE_DEVICE_UNIQUE_ID)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("PROCESS_COMMAND_APDU", e.toString())
             return Utility.hexStringToByteArray(HCEConstants.STATUS_FAILED)
-        }
-
-        val hexCommandApdu = Utility.toHex(commandApdu)
-
-        Log.d("PROCESS_COMMAND_APDU", commandApdu.toString())
-        Log.d("PROCESS_COMMAND_APDU", hexCommandApdu)
-
-
-        if (hexCommandApdu.length < HCEConstants.MIN_APDU_LENGTH) {
-            return Utility.hexStringToByteArray(HCEConstants.STATUS_FAILED)
-        }
-
-        if (hexCommandApdu.substring(0, 2) != HCEConstants.DEFAULT_CLA) {
-            return Utility.hexStringToByteArray(HCEConstants.CLA_NOT_SUPPORTED)
-        }
-
-        if (hexCommandApdu.substring(2, 4) == HCEConstants.SELECT_INS) {
-
-//        if (hexCommandApdu.substring(10, 24) == HCEConstants.AID)  {
-//            return Utility.hexStringToByteArray(HCEConstants.STATUS_SUCCESS)
-//        } else {
-//            return Utility.hexStringToByteArray(HCEConstants.STATUS_FAILED)
-//        }
-
-            Log.d("PROCESS_COMMAND_APDU", "SELECT SUCCESS")
-
-//            return Utility.hexStringToByteArray(HCEConstants.STATUS_SELECT_SUCCESS)
-            return Utility.hexStringToByteArray("AAAAAAAA")
-        }
-
-        if (hexCommandApdu.substring(2, 4) == HCEConstants.GET_INS) {
-            Log.d("PROCESS_COMMAND_APDU", "GET SUCCESS")
-
-            return Utility.hexStringToByteArray("1234567890ABCDEEF")
         }
 
         return Utility.hexStringToByteArray(HCEConstants.INS_NOT_SUPPORTED)
@@ -67,6 +53,6 @@ class HCEService : HostApduService() {
 
     // Lost communication between reader and Android device or another HCE Service selected
     override fun onDeactivated(reason: Int) {
-        Log.d(HCEConstants.TAG, "Deactivated: " + reason)
+        Log.d("ON_DEACTIVATED", "reason = " + reason)
     }
 }
