@@ -10,7 +10,7 @@ object HCEConstants {
     const val INS_SELECT_FILE = "A4"
     const val INS_GET_RESPONSE = "C0"
 
-    const val STATUS_SELECT_SUCCESS = "9000"
+    const val STATUS_SUCCESS = "9000"
     const val STATUS_FAILED = "6F00"
     const val CLA_NOT_SUPPORTED = "6E00"
     const val INS_NOT_SUPPORTED = "6D00"

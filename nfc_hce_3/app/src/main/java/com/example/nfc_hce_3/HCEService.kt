@@ -36,11 +36,11 @@ class HCEService : HostApduService() {
             when (apduCommand.ins) {
                 HCEConstants.INS_SELECT_FILE -> {
                     Log.d("PROCESS_COMMAND_APDU", "SELECT SUCCESS")
-                    return Utility.hexStringToByteArray(HCEConstants.STATUS_SELECT_SUCCESS)
+                    return Utility.hexStringToByteArray(HCEConstants.STATUS_SUCCESS)
                 }
                 HCEConstants.INS_GET_RESPONSE -> {
                     Log.d("PROCESS_COMMAND_APDU", "GET RESPONSE SUCCESS")
-                    return Utility.hexStringToByteArray(HCEConstants.HCE_DEVICE_UNIQUE_ID)
+                    return Utility.hexStringToByteArray(HCEConstants.HCE_DEVICE_UNIQUE_ID + HCEConstants.STATUS_SUCCESS)
                 }
             }
         } catch (e: Exception) {
