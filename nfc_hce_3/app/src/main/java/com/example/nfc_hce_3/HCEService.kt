@@ -19,7 +19,7 @@ class HCEService : HostApduService() {
 
             // Check for minimum APDU length
             if (commandApdu.size < HCEConstants.MIN_APDU_LENGTH) {
-                throw IllegalArgumentException("APDU command incorrect length")
+                Log.d("PROCESS_COMMAND_APDU", "Incorrect apdu length")
                 return Utility.hexStringToByteArray(HCEConstants.INCORRECT_APDU_LENGTH)
             }
 
