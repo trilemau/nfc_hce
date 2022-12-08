@@ -62,6 +62,29 @@ class HCEServiceUnitTest {
     }
 
     @Test
+    fun getResponseApdu_isIncorrectDataLength() {
+        val HCEService = HCEService()
+
+        // 00 C0 00 00 01 00 FF
+        val apduCommand = ubyteArrayOf(
+            0x00U,
+            0xC0U,
+            0x00U,
+            0x00U,
+            0x01U,
+            0x00U,
+            0xFFU
+        ).toByteArray()
+        val extras = null
+
+        val response = HCEService.processCommandApdu(apduCommand, extras)
+
+        val expected_response = ubyteArrayOf(0x67U, 0x00U).toByteArray()
+
+        assertArrayEquals(response, expected_response)
+    }
+
+    @Test
     fun apduCommand_IsNull() {
         val HCEService = HCEService()
 

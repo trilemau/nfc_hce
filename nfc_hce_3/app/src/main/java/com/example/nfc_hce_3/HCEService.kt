@@ -40,6 +40,12 @@ class HCEService : HostApduService() {
                 }
                 HCEConstants.INS_GET_RESPONSE -> {
                     Log.d("PROCESS_COMMAND_APDU", "GET RESPONSE SUCCESS")
+
+                    if (apduCommand.dataLength != 0) {
+                        Log.d("PROCESS_COMMAND_APDU", "Incorrect get response apdu length")
+                        return Utility.hexStringToByteArray(HCEConstants.INCORRECT_APDU_LENGTH)
+                    }
+
                     return Utility.hexStringToByteArray(HCEConstants.HCE_DEVICE_UNIQUE_ID + HCEConstants.STATUS_SUCCESS)
                 }
             }
