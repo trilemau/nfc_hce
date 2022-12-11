@@ -1,7 +1,7 @@
 # Android application using NFC host-based card emulation
 
 ## Description
-This is a simple Android application that implements a NFC host-based card emulation for an authentication use within an access control system. This application handles the communication between the reader and NFC-enabled smartphone from the smartphone's side.
+This is a simple Android application that implements a NFC host-based card emulation used for authentication within an access control system. This application handles the communication between the reader and NFC-enabled smartphone from the smartphone's side.
 
 ## Requirements
 - Android Studio Chipmunk
