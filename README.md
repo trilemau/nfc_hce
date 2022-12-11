@@ -7,8 +7,8 @@ This is a simple Android application that implements a NFC host-based card emula
 - Android Studio Chipmunk
 - Xiaomi Redmi 9C NFC (NFC-enabled smartphone)
 
-## Visual Studio Solution
-The solution contains:
+## Android project
+The project contains:
 - the implementation of Android application that can be used for NFC authentication within an access control system
 - unit tests
 
